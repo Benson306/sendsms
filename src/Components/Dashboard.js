@@ -35,24 +35,29 @@ function Dashboard() {
         }
 
         if (selectedFile) {
-        const formData = new FormData();
-        formData.append('amount', amount);
-        formData.append('file', selectedFile);
+            const formData = new FormData();
+            formData.append('amount', amount);
+            formData.append('file', selectedFile);
 
-        try {
-                const response = await fetch('http://localhost:3000/upload', {
+            try {
+              const response = await fetch('http://localhost:5000/upload', {
                 method: 'POST',
                 body: formData
-                });
+                })
 
-                if (response.ok) {
-                    alert('File uploaded successfully');
-                } else {
-                    alert('Error uploading file');
+                if (!response.ok) {
+                  const errorData = await response.json();
+                  alert(errorData.error);
+                  return;
                 }
+
+                const successData = await response.json();
+                alert(successData.message);
+                
             } catch (error) {
-                alert('Error uploading file:', error);
+                alert('Error:', error);
             }
+            
         } else {
             alert('Please upload a file');
         }
