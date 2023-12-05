@@ -4,6 +4,7 @@ function Dashboard() {
 
     const [selectedFile, setSelectedFile] = useState(null);
     const [amount, setAmount] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -28,9 +29,10 @@ function Dashboard() {
     };
 
     const handleFormSubmit = async () => {
-
+        setLoading(true);
         if(amount < 1){
             alert("Set Todays' Price of Maize");
+            setLoading(false);
             return;
         }
 
@@ -40,7 +42,7 @@ function Dashboard() {
             formData.append('file', selectedFile);
 
             try {
-              const response = await fetch('http://localhost:5000/upload', {
+              const response = await fetch(`${process.env.REACT_APP_API_URL}/upload`, {
                 method: 'POST',
                 body: formData
                 })
@@ -48,24 +50,29 @@ function Dashboard() {
                 if (!response.ok) {
                   const errorData = await response.json();
                   alert(errorData.error);
+                  setLoading(false)
                   return;
                 }
 
                 const successData = await response.json();
                 alert(successData.message);
-                
+                setLoading(false);
+
             } catch (error) {
                 alert('Error:', error);
+                setLoading(false);
             }
             
         } else {
             alert('Please upload a file');
+            setLoading(false);
         }
     };
 
     const handleDeleteFile = () => {
         setSelectedFile(null);
     };
+
   return (
     <div className='bg-slate-900 text-white min-h-screen p-5 lg:p-10'>
         <div className='text-white text-center mt-10'>SEND BULK SMS</div>
@@ -103,13 +110,16 @@ function Dashboard() {
                 <input type='number' onChange={e => setAmount(e.target.value)} value={amount} className='p-3 rounded-lg bg-gray-700 w-full mt-1 text-white' />
             </div>
 
-            <button 
+            {
+              loading && <div className='text-white mt-4'>Loading .....</div>
+            }
+            { !loading && <button 
             className='bg-blue-500 hover:bg-blue-900 p-2 rounded-lg mt-4' 
             onClick={(e)=>{
                 e.preventDefault();
                 handleFormSubmit();
             }}
-            >Send SMS</button>
+            >Send SMS</button> }
             
         </form>
     </div>
