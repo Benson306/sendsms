@@ -56,6 +56,8 @@ function Dashboard() {
 
                 const successData = await response.json();
                 alert(successData.message);
+                setSelectedFile(null);
+                setAmount(0);
                 setLoading(false);
 
             } catch (error) {
