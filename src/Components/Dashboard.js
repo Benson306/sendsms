@@ -4,7 +4,6 @@ function Dashboard() {
 
     const [selectedFile, setSelectedFile] = useState(null);
     const [maizeAmount, setMaizeAmount] = useState(0);
-    const [wheatAmount, setWheatAmount] = useState(0);
     const [date, setDate] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -38,23 +37,18 @@ function Dashboard() {
             return;
         }
 
-        if(wheatAmount < 1){
-          alert("Set Price of Wheat");
-          setLoading(false);
-          return;
-      }
-
       if(date == null){
         alert("Set The Date");
         setLoading(false);
         return;
-    }
+      }
+
+      const formattedDate = new Date(date).toLocaleDateString('en-GB');
 
         if (selectedFile) {
             const formData = new FormData();
             formData.append('maize_amount', maizeAmount);
-            formData.append('wheat_amount', wheatAmount);
-            formData.append('date', date);
+            formData.append('date', formattedDate);
             formData.append('file', selectedFile);
 
             try {
@@ -74,7 +68,6 @@ function Dashboard() {
                 alert(successData.message);
                 setSelectedFile(null);
                 setMaizeAmount(0);
-                setWheatAmount(0);
                 setDate(null);
                 setLoading(false);
 
@@ -128,12 +121,6 @@ function Dashboard() {
                 <label className='text-center text-sm'>Price of Maize:</label>
                 <br />
                 <input type='number' onChange={e => setMaizeAmount(e.target.value)} value={maizeAmount} className='p-3 rounded-lg bg-gray-700 w-full mt-1 text-white' />
-            </div>
-
-            <div className='mt-4'>
-                <label className='text-center text-sm'>Price of Wheat:</label>
-                <br />
-                <input type='number' onChange={e => setWheatAmount(e.target.value)} value={wheatAmount} className='p-3 rounded-lg bg-gray-700 w-full mt-1 text-white' />
             </div>
 
             <div className='mt-4'>
